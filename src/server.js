@@ -3,16 +3,18 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const userRouter = require('./routes/users');
+const logRequest = require('./utils/logger');
 
 const app = express();
 
-// Middleware to parse incoming JSON requests
 app.use(express.json());
-
-// Mount all user-related routes at /api/users
+app.use(logRequest);
 app.use('/api/users', userRouter);
 
-// Start the server on the defined port (default: 3000)
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

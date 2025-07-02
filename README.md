@@ -1,13 +1,15 @@
 # User Management API
 
-This is a simple RESTful API built using Node.js, Express, and MySQL to manage basic user records. The API supports Create, Read, Update, and Delete (CRUD) operations and is structured using a clean, modular folder layout.
+A lightweight RESTful API built with Node.js, Express, and MySQL to perform basic user management tasks. Designed to simulate admin-side operations like user onboarding, updates, and record cleanup.
+
 
 ## Features
 
-* Add a new user
-* Get all users
+* Create new user records
+* Fetch all users
 * Update existing user details
-* Delete a user
+* Delete users by ID
+* File-based logging for all requests (logs/api.log)
 
 ## Technologies Used
 
@@ -16,20 +18,24 @@ This is a simple RESTful API built using Node.js, Express, and MySQL to manage b
 * MySQL (via mysql2 package)
 * dotenv for environment variable management
 * Postman for API testing
+* File I/O logging via custom middleware
 
 ## Project Structure
 
 ```
 user-management-api/
 ├── src/
-│   ├── controllers/        # Request handlers (CRUD logic)
-│   ├── routes/             # API routes
-│   ├── db.js               # MySQL connection setup
-│   └── server.js           # Main application entry point
-├── .env                    # Environment variables (not committed)
-├── .gitignore              # Files/folders to ignore in Git
-├── package.json            # Project metadata and dependencies
-├── README.md               # Project documentation
+│   ├── controllers/        # CRUD logic
+│   ├── routes/             # Route definitions
+│   ├── utils/              # Logger (file logging)
+│   ├── db.js               # MySQL connection
+│   └── server.js           # App entry point
+├── logs/                   # Request logs (auto-generated)
+├── .env                    # DB credentials (excluded from Git)
+├── .gitignore              # Ignore rules
+├── package.json            # Project metadata
+├── README.md               # You're reading it!
+
 ```
 
 ## API Endpoints
@@ -38,8 +44,8 @@ user-management-api/
 | ------ | --------------- | ------------------ |
 | GET    | /api/users      | Retrieve all users |
 | POST   | /api/users      | Create a new user  |
-| PUT    | /api/users/\:id | Update user by ID  |
-| DELETE | /api/users/\:id | Delete user by ID  |
+| PUT    | /api/users/:id | Update user by ID  |
+| DELETE | /api/users/:id | Delete user by ID  |
 
 ## Setup Instructions
 
@@ -89,7 +95,3 @@ npm start
 ## Author
 
 Ronald Jacob
-
-## License
-
-This project is open-source and available under the [MIT License](LICENSE).

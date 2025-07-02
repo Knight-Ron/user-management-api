@@ -1,10 +1,15 @@
+// src/controllers/userController.js
+
 const db = require('../db');
 
-// Get all users from the database
+// Get all users
 exports.getAllUsers = (req, res) => {
   db.query('SELECT * FROM users', (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(results);
+    if (err) {
+      console.error('Error fetching users:', err);
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+    res.status(200).json(results);
   });
 };
 
@@ -12,38 +17,59 @@ exports.getAllUsers = (req, res) => {
 exports.createUser = (req, res) => {
   const { name, email } = req.body;
 
-  // Basic validation
   if (!name || !email) {
     return res.status(400).json({ error: 'Name and email are required.' });
   }
 
-  db.query('INSERT INTO users (name, email) VALUES (?, ?)', [name, email], (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.status(201).json({ message: 'User created successfully', userId: result.insertId });
+  const sql = 'INSERT INTO users (name, email) VALUES (?, ?)';
+  db.query(sql, [name, email], (err, result) => {
+    if (err) {
+      console.error('Error creating user:', err);
+      return res.status(500).json({ error: 'Failed to create user.' });
+    }
+
+    res.status(201).json({ message: 'User created', userId: result.insertId });
   });
 };
 
-// Update an existing user's name and email
+// Update user by ID
 exports.updateUser = (req, res) => {
-  const { name, email } = req.body;
   const { id } = req.params;
+  const { name, email } = req.body;
 
-  db.query(
-    'UPDATE users SET name = ?, email = ? WHERE id = ?',
-    [name, email, id],
-    (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: 'User updated successfully' });
+  if (!name || !email) {
+    return res.status(400).json({ error: 'Name and email are required.' });
+  }
+
+  const sql = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
+  db.query(sql, [name, email, id], (err, result) => {
+    if (err) {
+      console.error('Error updating user:', err);
+      return res.status(500).json({ error: 'Failed to update user.' });
     }
-  );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    res.status(200).json({ message: 'User updated' });
+  });
 };
 
-// Delete a user by ID
+// Delete user by ID
 exports.deleteUser = (req, res) => {
   const { id } = req.params;
 
   db.query('DELETE FROM users WHERE id = ?', [id], (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ message: 'User deleted successfully' });
+    if (err) {
+      console.error('Error deleting user:', err);
+      return res.status(500).json({ error: 'Failed to delete user.' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    res.status(200).json({ message: 'User deleted' });
   });
 };
