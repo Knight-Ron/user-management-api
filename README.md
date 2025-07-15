@@ -52,7 +52,7 @@ user-management-api/
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/user-management-api.git
+git clone https://github.com/Knight-Ron/user-management-api.git
 cd user-management-api
 ```
 
